@@ -1,4 +1,4 @@
-// Endpoint da API de consulta (atualize se necessário)
+// Endpoint da API de consulta
 const API_ENDPOINT_CONSULTA = 'https://apicadastroalunos.onrender.com/api/alunos';
 
 // Elementos do DOM
@@ -84,29 +84,28 @@ async function buscarAlunos() {
         const dadosResposta = await response.json();
 
         if (response.status === 200) {
-            // Normalize response to an array of alunos
-            let alunos = null;
+            // Sucesso - verificar múltiplos formatos de resposta
+            let alunosParaRenderizar = [];
 
+            // Formato 1: Array direto
             if (Array.isArray(dadosResposta)) {
-                alunos = dadosResposta;
-            } else if (Array.isArray(dadosResposta.alunos)) {
-                alunos = dadosResposta.alunos;
-            } else if (Array.isArray(dadosResposta.data)) {
-                alunos = dadosResposta.data;
-            } else if (dadosResposta && typeof dadosResposta === 'object' && Object.keys(dadosResposta).length === 0) {
-                alunos = [];
+                alunosParaRenderizar = dadosResposta;
+            }
+            // Formato 2: Objeto com propriedade 'alunos' (padrão da API)
+            else if (dadosResposta && dadosResposta.alunos && Array.isArray(dadosResposta.alunos)) {
+                alunosParaRenderizar = dadosResposta.alunos;
+            }
+            // Formato 3: Objeto com propriedade 'data'
+            else if (dadosResposta && dadosResposta.data && Array.isArray(dadosResposta.data)) {
+                alunosParaRenderizar = dadosResposta.data;
             }
 
-            if (alunos) {
-                renderizarAlunos(alunos);
-                if (alunos.length > 0) {
-                    exibirMensagem(`${alunos.length} aluno(s) encontrado(s).`, 'success');
-                } else {
-                    exibirMensagem('Nenhum aluno cadastrado encontrado.', 'info');
-                }
+            if (alunosParaRenderizar.length > 0) {
+                renderizarAlunos(alunosParaRenderizar);
+                exibirMensagem(`${alunosParaRenderizar.length} aluno(s) encontrado(s).`, 'success');
             } else {
-                exibirMensagem('Formato de resposta inesperado da API.', 'error');
-                limparTabela();
+                renderizarAlunos([]);
+                exibirMensagem('Nenhum aluno cadastrado encontrado.', 'info');
             }
         } else if (response.status === 404) {
             // Não encontrado
@@ -114,12 +113,12 @@ async function buscarAlunos() {
             limparTabela();
         } else if (response.status === 500) {
             // Erro do servidor
-            const mensagemErro = dadosResposta.message || dadosResposta.error || 'Erro interno do servidor. Tente novamente mais tarde.';
+            const mensagemErro = dadosResposta.mensagem || dadosResposta.message || dadosResposta.error || 'Erro interno do servidor. Tente novamente mais tarde.';
             exibirMensagem(mensagemErro, 'error');
             limparTabela();
         } else {
             // Outros erros
-            const mensagemErro = dadosResposta.message || dadosResposta.error || `Erro ao buscar alunos. Status: ${response.status}`;
+            const mensagemErro = dadosResposta.mensagem || dadosResposta.message || dadosResposta.error || `Erro ao buscar alunos. Status: ${response.status}`;
             exibirMensagem(mensagemErro, 'error');
             limparTabela();
         }
