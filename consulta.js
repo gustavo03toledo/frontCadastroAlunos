@@ -1,5 +1,5 @@
-// Endpoint da API de consulta
-const API_ENDPOINT_CONSULTA = 'INSIRA_AQUI_O_URL_DO_AZURE/api/alunos';
+// Endpoint da API de consulta (atualize se necessário)
+const API_ENDPOINT_CONSULTA = 'https://apicadastroalunos.onrender.com/api/alunos';
 
 // Elementos do DOM
 const btnBuscarAlunos = document.getElementById('btnBuscarAlunos');
@@ -84,21 +84,23 @@ async function buscarAlunos() {
         const dadosResposta = await response.json();
 
         if (response.status === 200) {
-            // Sucesso
+            // Normalize response to an array of alunos
+            let alunos = null;
+
             if (Array.isArray(dadosResposta)) {
-                renderizarAlunos(dadosResposta);
-                
-                if (dadosResposta.length > 0) {
-                    exibirMensagem(`${dadosResposta.length} aluno(s) encontrado(s).`, 'success');
-                } else {
-                    exibirMensagem('Nenhum aluno cadastrado encontrado.', 'info');
-                }
-            } else if (dadosResposta.alunos && Array.isArray(dadosResposta.alunos)) {
-                // Se a resposta vier em um objeto com propriedade 'alunos'
-                renderizarAlunos(dadosResposta.alunos);
-                
-                if (dadosResposta.alunos.length > 0) {
-                    exibirMensagem(`${dadosResposta.alunos.length} aluno(s) encontrado(s).`, 'success');
+                alunos = dadosResposta;
+            } else if (Array.isArray(dadosResposta.alunos)) {
+                alunos = dadosResposta.alunos;
+            } else if (Array.isArray(dadosResposta.data)) {
+                alunos = dadosResposta.data;
+            } else if (dadosResposta && typeof dadosResposta === 'object' && Object.keys(dadosResposta).length === 0) {
+                alunos = [];
+            }
+
+            if (alunos) {
+                renderizarAlunos(alunos);
+                if (alunos.length > 0) {
+                    exibirMensagem(`${alunos.length} aluno(s) encontrado(s).`, 'success');
                 } else {
                     exibirMensagem('Nenhum aluno cadastrado encontrado.', 'info');
                 }

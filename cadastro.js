@@ -1,5 +1,5 @@
 // Endpoint da API de cadastro
-const API_ENDPOINT_CADASTRO = 'INSIRA_AQUI_O_URL_DO_AZURE/api/alunos/cadastro';
+const API_ENDPOINT_CADASTRO = 'https://apicadastroalunos.onrender.com/api/alunos/cadastro';
 
 // Elementos do DOM
 const formCadastroAluno = document.getElementById('formCadastroAluno');
@@ -95,7 +95,9 @@ async function enviarCadastro(dados) {
 
         if (response.status === 201) {
             // Sucesso
-            exibirMensagem('Aluno cadastrado com sucesso!', 'success');
+            // Preferir mensagem em PT, cair para 'message' se não existir
+            const textoSucesso = dadosResposta.mensagem || dadosResposta.message || 'Aluno cadastrado com sucesso!';
+            exibirMensagem(textoSucesso, 'success');
             formCadastroAluno.reset();
             
             // Remover classes de sucesso após um tempo
@@ -106,15 +108,15 @@ async function enviarCadastro(dados) {
             }, 3000);
         } else if (response.status === 400) {
             // Erro de validação
-            const mensagemErro = dadosResposta.message || dadosResposta.error || 'Dados inválidos. Verifique os campos preenchidos.';
+            const mensagemErro = dadosResposta.mensagem || dadosResposta.message || dadosResposta.error || dadosResposta.erro || 'Dados inválidos. Verifique os campos preenchidos.';
             exibirMensagem(mensagemErro, 'error');
         } else if (response.status === 500) {
             // Erro do servidor
-            const mensagemErro = dadosResposta.message || dadosResposta.error || 'Erro interno do servidor. Tente novamente mais tarde.';
+            const mensagemErro = dadosResposta.mensagem || dadosResposta.message || dadosResposta.error || 'Erro interno do servidor. Tente novamente mais tarde.';
             exibirMensagem(mensagemErro, 'error');
         } else {
             // Outros erros
-            const mensagemErro = dadosResposta.message || dadosResposta.error || `Erro ao cadastrar aluno. Status: ${response.status}`;
+            const mensagemErro = dadosResposta.mensagem || dadosResposta.message || dadosResposta.error || `Erro ao cadastrar aluno. Status: ${response.status}`;
             exibirMensagem(mensagemErro, 'error');
         }
     } catch (error) {
