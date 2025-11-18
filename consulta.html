@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Alunos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Consulta de Alunos</h1>
+            <nav>
+                <a href="cadastro.html">Ir para Cadastro</a>
+            </nav>
+        </header>
+
+        <main>
+            <div class="consulta-controls">
+                <button id="btnBuscarAlunos" class="btn-buscar">Buscar Todos os Alunos</button>
+            </div>
+
+            <div id="mensagemFeedback" class="mensagem-feedback"></div>
+
+            <div class="tabela-container">
+                <table id="tabelaAlunos">
+                    <thead>
+                        <tr>
+                            <th>Nome Completo</th>
+                            <th>Usuário de Acesso</th>
+                            <th>E-mail</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Os dados serão inseridos dinamicamente aqui -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script src="consulta.js"></script>
+</body>
+</html>
+
