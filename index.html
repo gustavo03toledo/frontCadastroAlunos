@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Novo Aluno</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Cadastro de Novo Aluno</h1>
+            <nav>
+                <a href="consulta.html">Ir para Consulta</a>
+            </nav>
+        </header>
+
+        <main>
+            <form id="formCadastroAluno">
+                <div class="form-group">
+                    <label for="nome_completo">Nome Completo *</label>
+                    <input 
+                        type="text" 
+                        id="nome_completo" 
+                        name="nome_completo" 
+                        required
+                        placeholder="Digite o nome completo do aluno"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="usuario_acesso">Usuário de Acesso *</label>
+                    <input 
+                        type="text" 
+                        id="usuario_acesso" 
+                        name="usuario_acesso" 
+                        required
+                        placeholder="Digite o usuário de acesso"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="email_aluno">E-mail do Aluno *</label>
+                    <input 
+                        type="email" 
+                        id="email_aluno" 
+                        name="email_aluno" 
+                        required
+                        placeholder="exemplo@email.com"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="senha_hash">Senha *</label>
+                    <input 
+                        type="password" 
+                        id="senha_hash" 
+                        name="senha_hash" 
+                        required
+                        placeholder="Digite a senha"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="observacao">Observação</label>
+                    <textarea 
+                        id="observacao" 
+                        name="observacao" 
+                        rows="4"
+                        placeholder="Observações adicionais (opcional)"
+                    ></textarea>
+                </div>
+
+                <div id="mensagemFeedback" class="mensagem-feedback"></div>
+
+                <button type="submit" class="btn-submit">Cadastrar Aluno</button>
+            </form>
+        </main>
+    </div>
+
+    <script src="cadastro.js"></script>
+</body>
+</html>
+
