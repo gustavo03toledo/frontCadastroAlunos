@@ -78,11 +78,16 @@ async function buscarAlunos() {
         btnBuscarAlunos.textContent = 'Buscando...';
         limparMensagem();
 
+        console.log('🔍 Buscando alunos em:', API_ENDPOINT_CONSULTA);
+
         const response = await fetch(API_ENDPOINT_CONSULTA, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-            }
+                'Accept': 'application/json',
+            },
+            mode: 'cors',
+            credentials: 'omit'
         });
 
         // Verificar se a resposta é JSON válido antes de fazer parse
@@ -114,30 +119,35 @@ async function buscarAlunos() {
             }
 
             if (alunosParaRenderizar.length > 0) {
+                console.log('✅ Alunos encontrados:', alunosParaRenderizar.length);
                 renderizarAlunos(alunosParaRenderizar);
                 exibirMensagem(`${alunosParaRenderizar.length} aluno(s) encontrado(s).`, 'success');
             } else {
+                console.log('ℹ️ Nenhum aluno encontrado');
                 renderizarAlunos([]);
                 exibirMensagem('Nenhum aluno cadastrado encontrado.', 'info');
             }
         } else if (response.status === 404) {
             // Não encontrado
             const mensagemErro = dadosResposta?.mensagem || dadosResposta?.message || dadosResposta?.erro || 'Endpoint não encontrado. Verifique se a rota GET /api/alunos está disponível na API.';
+            console.log('❌ Erro 404:', mensagemErro);
             exibirMensagem(mensagemErro, 'error');
             limparTabela();
         } else if (response.status === 500) {
             // Erro do servidor
             const mensagemErro = dadosResposta?.mensagem || dadosResposta?.message || dadosResposta?.erro || dadosResposta?.error || 'Erro interno do servidor. Tente novamente mais tarde.';
+            console.log('❌ Erro 500:', mensagemErro);
             exibirMensagem(mensagemErro, 'error');
             limparTabela();
         } else {
             // Outros erros
             const mensagemErro = dadosResposta?.mensagem || dadosResposta?.message || dadosResposta?.erro || dadosResposta?.error || `Erro ao buscar alunos. Status: ${response.status}`;
+            console.log('❌ Erro:', mensagemErro);
             exibirMensagem(mensagemErro, 'error');
             limparTabela();
         }
     } catch (error) {
-        console.error('Erro ao buscar alunos:', error);
+        console.error('❌ Erro ao buscar alunos:', error);
         
         // Tratamento específico para erros de rede ou CORS
         if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {

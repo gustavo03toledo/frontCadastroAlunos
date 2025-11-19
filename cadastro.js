@@ -83,11 +83,17 @@ function coletarDadosFormulario() {
 // Função para enviar dados para a API
 async function enviarCadastro(dados) {
     try {
+        console.log('📤 Enviando cadastro para:', API_ENDPOINT_CADASTRO);
+        console.log('📊 Dados:', dados);
+        
         const response = await fetch(API_ENDPOINT_CADASTRO, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json',
             },
+            mode: 'cors',
+            credentials: 'omit',
             body: JSON.stringify(dados)
         });
 
@@ -95,6 +101,7 @@ async function enviarCadastro(dados) {
 
         if (response.status === 201) {
             // Sucesso
+            console.log('✅ Aluno cadastrado com sucesso!', dadosResposta);
             exibirMensagem('Aluno cadastrado com sucesso!', 'success');
             formCadastroAluno.reset();
             
@@ -106,20 +113,27 @@ async function enviarCadastro(dados) {
             }, 3000);
         } else if (response.status === 400) {
             // Erro de validação
-            const mensagemErro = dadosResposta.message || dadosResposta.error || 'Dados inválidos. Verifique os campos preenchidos.';
+            const mensagemErro = dadosResposta.mensagem || dadosResposta.message || dadosResposta.error || 'Dados inválidos. Verifique os campos preenchidos.';
+            console.log('❌ Erro 400:', mensagemErro);
             exibirMensagem(mensagemErro, 'error');
         } else if (response.status === 500) {
             // Erro do servidor
-            const mensagemErro = dadosResposta.message || dadosResposta.error || 'Erro interno do servidor. Tente novamente mais tarde.';
+            const mensagemErro = dadosResposta.mensagem || dadosResposta.message || dadosResposta.error || 'Erro interno do servidor. Tente novamente mais tarde.';
+            console.log('❌ Erro 500:', mensagemErro);
             exibirMensagem(mensagemErro, 'error');
         } else {
             // Outros erros
-            const mensagemErro = dadosResposta.message || dadosResposta.error || `Erro ao cadastrar aluno. Status: ${response.status}`;
+            const mensagemErro = dadosResposta.mensagem || dadosResposta.message || dadosResposta.error || `Erro ao cadastrar aluno. Status: ${response.status}`;
+            console.log('❌ Erro:', mensagemErro);
             exibirMensagem(mensagemErro, 'error');
         }
     } catch (error) {
-        console.error('Erro ao enviar cadastro:', error);
-        exibirMensagem('Erro de conexão. Verifique se a API está acessível e tente novamente.', 'error');
+        console.error('❌ Erro ao enviar cadastro:', error);
+        if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+            exibirMensagem('Erro de conexão. Verifique se a API está acessível e se há problemas de CORS.', 'error');
+        } else {
+            exibirMensagem('Erro de conexão. Verifique se a API está acessível e tente novamente.', 'error');
+        }
     }
 }
 
